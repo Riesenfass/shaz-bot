@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Riesenfass/shaz-bot#readme",
   "dependencies": {
-    "discord.js": "^12.3.1"
+    "discord.js": "^12.3.1",
+    "node-cron": "^2.0.3"
   }
 }
