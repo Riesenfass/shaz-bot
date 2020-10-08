@@ -1,0 +1,22 @@
+{
+  "name": "shaz-bot",
+  "version": "1.0.0",
+  "description": "A Discord chat bot.",
+  "main": "index.js",
+  "scripts": {
+    "test": "info"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Riesenfass/shaz-bot.git"
+  },
+  "author": "Shane Myers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Riesenfass/shaz-bot/issues"
+  },
+  "homepage": "https://github.com/Riesenfass/shaz-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.3.1"
+  }
+}
