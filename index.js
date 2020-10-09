@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const cron = require('node-cron');
+var seedrandom = require('seedrandom');
 const { prefix, token, channelId, guildId } = require('./config.json');
 const client = new Discord.Client();
 const starteddate = new Date();
@@ -10,6 +11,13 @@ const startedTime =(starteddate.getMonth()+1) + "/"
                 + ("0" + starteddate.getMinutes()).toString().slice(-2) + ":" 
                 + ("0" + starteddate.getSeconds()).toString().slice(-2);
 
+const msgList = [
+    " definitely broke the lamp.",
+    " absolutely was guilty in breaking the lamp.",
+    " was wholly responsible for breaking Mark's lamp.",
+    " may lie about it, but he broke the lamp."
+]
+// ====== Embeds ======
 const helpEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle('Supported Commands')
@@ -75,11 +83,12 @@ const shaneEmbed = new Discord.MessageEmbed()
                 .setDescription("Happy birthday Shane! Without you, I wouldn't exist.")
                 .setImage("https://i.imgur.com/8UjopnD.gif");
 
+//===== Schedule =======
 cron.schedule('0 0 10 * * *', () => dailyMessage()); // fire every day at 10am
 //cron.schedule('10 * * * * *', () => dailyMessage());                    
 
 client.once('ready', () => {
-    console.log('Ready! Started on: ' + startedTime.toString());
+    console.log('Shaz-bot startup complete. Started on: ' + startedTime.toString());
 });
 
 //use the token stored in config.json to login
@@ -111,7 +120,7 @@ client.on('message', message => {
         message.channel.send(randomConan());
     }
     //If someone mentions the lamp, make sure to assign blame randomly.
-    else if (message.content.includes('lamp')) {
+    else if (message.content.toLowerCase().includes('lamp')) {
         //console.log(message.content);
         //don't reply to yourself stupid bot!
         if (message.author.bot){
@@ -121,6 +130,7 @@ client.on('message', message => {
         var result = getRandomInt(2);
         //console.log(result);
         // send back a random assignment of blame.
+        var msg = msgList[getRandomInt(msgList.length)]; 
         var guilty = "No One";
         if ( result === 0){
             guilty = "Al";
@@ -129,11 +139,12 @@ client.on('message', message => {
         {
             guilty = "Shane";
         }
-        message.channel.send( guilty + ' broke the lamp for sure.');
+        message.channel.send( guilty + msg);
     }
 
     function getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
+        var rng = seedrandom();
+        return Math.floor(rng() * Math.floor(max));
       }
 
     function randomConan(){
@@ -172,7 +183,7 @@ function dailyMessage(){
         channel.send(markEmbed);
     }
 
-    if(currentDate.getMonth()+1 === 10 & currentDate.getDate() === 9){
+    if(currentDate.getMonth()+1 === 11 & currentDate.getDate() === 22){
         channel.send(shaneEmbed);
     }
 
