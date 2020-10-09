@@ -6,8 +6,8 @@ const starteddate = new Date();
 const startedTime =(starteddate.getMonth()+1) + "/"
                 + ("0" + starteddate.getDate()).toString().slice(-2) + "/" 
                 + starteddate.getFullYear() + " @ "  
-                + starteddate.getHours() + ":"  
-                + starteddate.getMinutes() + ":" 
+                + ("0" + starteddate.getHours()).toString().slice(-2) + ":"  
+                + ("0" + starteddate.getMinutes()).toString().slice(-2) + ":" 
                 + ("0" + starteddate.getSeconds()).toString().slice(-2);
 
 const helpEmbed = new Discord.MessageEmbed()
@@ -16,7 +16,8 @@ const helpEmbed = new Discord.MessageEmbed()
                 .setDescription("Here are the available commands. If you'd like to see some new functionality, just let Shane know.")
                 .addFields(
                     { name: '!help', value: 'Prints the help - but you already knew that' },
-                    { name: '!uptime', value: "Display how long I've been online" }
+                    { name: '!uptime', value: "Display how long I've been online" },
+                    { name: '!randomConan', value: "Receive words of inspiration" }
                     //{ name: '\u200B', value: '\u200B' }
                 );
 const uptimeEmbed = new Discord.MessageEmbed()
@@ -74,8 +75,8 @@ const shaneEmbed = new Discord.MessageEmbed()
                 .setDescription("Happy birthday Shane! Without you, I wouldn't exist.")
                 .setImage("https://i.imgur.com/8UjopnD.gif");
 
-//cron.schedule('0 0 10 * * *', () => dailyMessage()); // fire every day at 10am
-cron.schedule('10 * * * * *', () => dailyMessage());                    
+cron.schedule('0 0 10 * * *', () => dailyMessage()); // fire every day at 10am
+//cron.schedule('10 * * * * *', () => dailyMessage());                    
 
 client.once('ready', () => {
     console.log('Ready! Started on: ' + startedTime.toString());
@@ -101,11 +102,14 @@ client.on('message', message => {
 
     //List the uptime
     else if (message.content === `${prefix}uptime`) {
-        console.log(message.content);
         // send back the value stored at bot start time
         message.channel.send(uptimeEmbed);
     }
 
+    else if (message.content === `${prefix}randomConan`) {
+        // send back a random quote from Conan
+        message.channel.send(randomConan());
+    }
     //If someone mentions the lamp, make sure to assign blame randomly.
     else if (message.content.includes('lamp')) {
         //console.log(message.content);
@@ -131,6 +135,17 @@ client.on('message', message => {
     function getRandomInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
       }
+
+    function randomConan(){
+        var quotes =[
+            "What is best in life? To crush your enemies, see them driven before you, and to hear the lamenation of their women",
+            "Crom, I have never prayed to you before. I have no tongue for it. No one, not even you, will remember if we were good men or bad. Why we fought, or why we died. All that matters is that two stood against many. That's what's important! Valor pleases you, Crom... so grant me one request. Grant me revenge! And if you do not listen, then to HELL with you!",
+            "Crom laughs at your four winds. He laughs from his mountain.",
+            "[About Crom] He is strong! If I die, I have to go before him, and he will ask me, What is the riddle of steel? If I don't know it, he will cast me out of Valhalla and laugh at me. That's Crom, strong on his mountain!"
+        ]
+        var index = getRandomInt(quotes.length);
+        return quotes[index];
+    }
 });
 
 function dailyMessage(){
@@ -157,7 +172,7 @@ function dailyMessage(){
         channel.send(markEmbed);
     }
 
-    if(currentDate.getMonth()+1 === 11 & currentDate.getDate() === 22){
+    if(currentDate.getMonth()+1 === 10 & currentDate.getDate() === 9){
         channel.send(shaneEmbed);
     }
 
