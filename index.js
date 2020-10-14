@@ -119,6 +119,11 @@ client.on('message', message => {
         // send back a random quote from Conan
         message.channel.send(randomConan());
     }
+    //react with a smiley if praised
+    else if (message.content.toLowerCase().includes('good bot')) {
+             message.react('😍');
+    }
+
     //If someone mentions the lamp, make sure to assign blame randomly.
     else if (message.content.toLowerCase().includes('lamp')) {
         //console.log(message.content);
