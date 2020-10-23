@@ -17,6 +17,36 @@ const msgList = [
     " was wholly responsible for breaking Mark's lamp.",
     " may lie about it, but he broke the lamp."
 ]
+
+//Conan Quotes
+const quotes =[
+    "What is best in life? To crush your enemies, see them driven before you, and to hear the lamenation of their women",
+    "Crom, I have never prayed to you before. I have no tongue for it. No one, not even you, will remember if we were good men or bad. Why we fought, or why we died. All that matters is that two stood against many. That's what's important! Valor pleases you, Crom... so grant me one request. Grant me revenge! And if you do not listen, then to HELL with you!",
+    "Crom laughs at your four winds. He laughs from his mountain.",
+    "[About Crom] He is strong! If I die, I have to go before him, and he will ask me, What is the riddle of steel? If I don't know it, he will cast me out of Valhalla and laugh at me. That's Crom, strong on his mountain!"
+]
+
+//Arnold gifs
+const arnoldGifs =[
+    "https://i.imgur.com/NB3v2Rs.gif",
+    "https://i.imgur.com/OXidFev.gif",
+    "https://i.imgur.com/Gi45o5e.gif",
+    "https://i.imgur.com/J0yQe9j.gif",
+    "https://i.imgur.com/9YZLhPH.gif",
+    "https://i.imgur.com/pFU35q0.gif",
+    "https://i.imgur.com/Lz5u1Mn.gif",
+    "https://i.imgur.com/IoLwqfI.gif",
+    "https://i.imgur.com/yFT5tlM.gif",
+    "https://i.imgur.com/HbxjH0u.gif",
+    "https://i.imgur.com/vAzMF23.gif",
+    "https://i.imgur.com/VMVtyIh.gif",
+    "https://i.imgur.com/wPfk7Pk.gif",
+    "https://i.imgur.com/OGP8rGy.gif",
+    "https://i.imgur.com/kRRH28C.gif",
+    "https://i.imgur.com/n5tI7a4.gif",
+    "https://i.imgur.com/086E6wz.gif",
+    "https://i.imgur.com/mFrOVQR.gif"
+]
 // ====== Embeds ======
 const helpEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
@@ -44,6 +74,12 @@ const gamenightEmbed = new Discord.MessageEmbed()
                 .setTitle("Happy Halloween!")
                 .setImage("https://i.imgur.com/vu4NZiB.jpg");
 
+const thanksgivingEmbed = new Discord.MessageEmbed()
+                .setColor('#D2691E')
+                .setTitle("Happy Thanksgiving!")
+                .setDescription("I require more wine to finish this story...")
+                .setImage("https://i.imgur.com/bFCbyrp.jpg");
+
 const christmasEmbed = new Discord.MessageEmbed()
                 .setColor('#FF0000')
                 .setTitle("Merry Christmas!")
@@ -54,10 +90,20 @@ const newyearsEmbed = new Discord.MessageEmbed()
                 .setTitle("Happy New Year!")
                 .setImage("https://i.imgur.com/VdP6Brw.gif");
 
+const memorialDayEmbed = new Discord.MessageEmbed()
+                .setColor('#FF0000')
+                .setTitle("Happy Memorial Day")
+                .setImage("https://i.imgur.com/oIiItAc.gif");
+
 const fourthofjulyEmbed = new Discord.MessageEmbed()
                 .setColor('#FF00FF')
                 .setTitle("Happy 4th of July!")
                 .setImage("https://i.imgur.com/UyzKzEy.gif");
+                
+const laborDayEmbed = new Discord.MessageEmbed()
+                .setColor('#FF0000')
+                .setTitle("Happy Labor Day!")
+                .setImage("https://i.gifer.com/78iC.gif");
 
 const alEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
@@ -106,7 +152,8 @@ client.on('message', message => {
     if (message.content === `${prefix}test`) {
         //console.log(message.content);
          // send back a list of commands.
-         message.channel.send(shaneEmbed);
+         //message.channel.send(laborDayEmbed);
+         dailyMessage();
       }
 
     //List the uptime
@@ -123,6 +170,12 @@ client.on('message', message => {
     else if (message.content.toLowerCase().includes('good bot')) {
              message.react('😍');
     }
+
+
+    //random Arnold gif
+    else if (message.content.toLowerCase().includes('arnold')) {
+        message.channel.send(randomArnold());
+}
 
     //If someone mentions the lamp, make sure to assign blame randomly.
     else if (message.content.toLowerCase().includes('lamp')) {
@@ -153,20 +206,44 @@ client.on('message', message => {
       }
 
     function randomConan(){
-        var quotes =[
-            "What is best in life? To crush your enemies, see them driven before you, and to hear the lamenation of their women",
-            "Crom, I have never prayed to you before. I have no tongue for it. No one, not even you, will remember if we were good men or bad. Why we fought, or why we died. All that matters is that two stood against many. That's what's important! Valor pleases you, Crom... so grant me one request. Grant me revenge! And if you do not listen, then to HELL with you!",
-            "Crom laughs at your four winds. He laughs from his mountain.",
-            "[About Crom] He is strong! If I die, I have to go before him, and he will ask me, What is the riddle of steel? If I don't know it, he will cast me out of Valhalla and laugh at me. That's Crom, strong on his mountain!"
-        ]
         var index = getRandomInt(quotes.length);
         return quotes[index];
     }
+
+    function randomArnold(){
+        var index = getRandomInt(arnoldGifs.length);
+        var arnoldEmbed =  new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle("Did someone say Arnold?!")
+        .setImage(arnoldGifs[index]);
+        return arnoldEmbed;
+    }
 });
 
+//calculate if non-fixed holiday.
+function irregularHoliday(date){
+        const isDay = (d, month, day, occurance) => {
+            if (d.getMonth() == (month - 1) && d.getDay() == day) {
+                if (occurance > 0) {
+                    return occurance == Math.ceil(d.getDate() / 7);
+                } else {
+                    // check last occurance
+                    let _d = new Date(d);
+                    _d.setDate(d.getDate() + 7);
+                    return _d.getMonth() > d.getMonth();
+                }
+            }
+            return false;
+        };
+        if (isDay(date, 5, 1, -1)) { return "Memorial Day"; }
+        else if (isDay(date, 9, 1, 1)) { return "Labor Day"; }
+        else if (isDay(date, 11, 4, 4)) { return "Thanksgiving Day"; }
+}
+
 function dailyMessage(){
-    //console.log("Fired daily message");
+    console.log("Fired daily message");
     var currentDate = new Date();
+    var irrHoliday = "";
     var channel = client.channels.cache.get(`${channelId}`);
 
     //check if Wednesday (day 3)
@@ -193,6 +270,18 @@ function dailyMessage(){
     }
 
     // Holidays
+
+    var irrHoliday = irregularHoliday(currentDate);
+    if(irrHoliday === "Memorial Day"){
+        channel.send(memorialDayEmbed);
+    }
+    else if (irrHoliday === "Labor Day"){
+        channel.send(laborDayEmbed);
+    }
+    else if (irrHoliday === "Thanksgiving Day"){
+        channel.send(thanksgivingEmbed);
+    }
+
     // New Years
     if(currentDate.getMonth()+1 === 1 & currentDate.getDate() === 1){
         channel.send(newyearsEmbed);
@@ -209,8 +298,6 @@ function dailyMessage(){
     if(currentDate.getMonth()+1 === 10 & currentDate.getDate() === 31){
         channel.send(halloweenEmbed);
     }
-
-    //Thanksgiving
 
     //Christmas
     if(currentDate.getMonth()+1 === 12 & currentDate.getDate() === 25){
