@@ -31,7 +31,6 @@ const arnoldGifs =[
     "https://i.imgur.com/NB3v2Rs.gif",
     "https://i.imgur.com/OXidFev.gif",
     "https://i.imgur.com/Gi45o5e.gif",
-    "https://i.imgur.com/J0yQe9j.gif",
     "https://i.imgur.com/9YZLhPH.gif",
     "https://i.imgur.com/pFU35q0.gif",
     "https://i.imgur.com/Lz5u1Mn.gif",
@@ -45,6 +44,8 @@ const arnoldGifs =[
     "https://i.imgur.com/kRRH28C.gif",
     "https://i.imgur.com/n5tI7a4.gif",
     "https://i.imgur.com/086E6wz.gif",
+    "https://i.imgur.com/fsaRyMQ.gif",
+    "https://i.imgur.com/oX8sUhb.gif",
     "https://i.imgur.com/mFrOVQR.gif"
 ]
 // ====== Embeds ======
@@ -55,7 +56,8 @@ const helpEmbed = new Discord.MessageEmbed()
                 .addFields(
                     { name: '!help', value: 'Prints the help - but you already knew that' },
                     { name: '!uptime', value: "Display how long I've been online" },
-                    { name: '!randomConan', value: "Receive words of inspiration" }
+                    { name: '!randomConan', value: "Receive words of inspiration" },
+                    { name: '!status', value: "Set the status. Examples: !status watching TV, !status listening to music. Status can be cleared by using: !status reset" }
                     //{ name: '\u200B', value: '\u200B' }
                 );
 const uptimeEmbed = new Discord.MessageEmbed()
@@ -162,6 +164,29 @@ client.on('message', message => {
         message.channel.send(uptimeEmbed);
     }
 
+    //Change Status
+    //example usage: !status watching You Sleep
+    else if (message.content.toLowerCase().includes(`${prefix}status`)) {
+           // parse message to display
+           var messageContent = message.content.split(" ");
+           
+           //parse out activity content
+           var activityName = "";
+           for (var x =2; x<=messageContent.length-1; x++){
+               activityName = activityName + " " + messageContent[x];
+           }
+
+           if (messageContent.length > 2 && messageContent[1].toLowerCase() === 'watching'){
+                client.user.setActivity(activityName, { type: 'WATCHING'});
+           }
+           else if (messageContent.length > 2 && messageContent[1].toLowerCase() === 'listening'){
+                 client.user.setActivity(activityName, { type: 'LISTENING'});
+            }
+           else if (messageContent.length >= 2 && messageContent[1].toLowerCase() === 'reset'){
+                client.user.setActivity();
+            }
+    }
+
     else if (message.content === `${prefix}randomConan`) {
         // send back a random quote from Conan
         message.channel.send(randomConan());
@@ -212,6 +237,7 @@ client.on('message', message => {
 
     function randomArnold(){
         var index = getRandomInt(arnoldGifs.length);
+        console.log("Random number was: " + index + ", Arnold gif: " + arnoldGifs[index]);
         var arnoldEmbed =  new Discord.MessageEmbed()
         .setColor('#0099ff')
         .setTitle("Did someone say Arnold?!")
