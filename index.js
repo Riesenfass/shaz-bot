@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const cron = require('node-cron');
 var seedrandom = require('seedrandom');
-const { prefix, token, channelId, guildId } = require('./config.json');
+const { prefix, token, channelId, guildId,streamingChannelId,testChannelId } = require('./config.json');
 const client = new Discord.Client();
 const starteddate = new Date();
 const startedTime =(starteddate.getMonth()+1) + "/"
@@ -60,6 +60,7 @@ const helpEmbed = new Discord.MessageEmbed()
                     { name: '!status', value: "Set the status. Examples: !status watching TV, !status listening to music. Status can be cleared by using: !status reset" }
                     //{ name: '\u200B', value: '\u200B' }
                 );
+
 const uptimeEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle('Uptime')
@@ -142,20 +143,33 @@ client.once('ready', () => {
 //use the token stored in config.json to login
 client.login(token);
 
+//Check for streaming, call the method to send an embed if detected.
+client.on("voiceStateUpdate", (oldVoiceState, newVoiceState) => {
+    if (!newVoiceState) {return false};
+    if (newVoiceState === oldVoiceState) {return false;}
+    if (newVoiceState.streaming) {
+            newPresence = newVoiceState.member.user.presence;
+            newPresence.activities.forEach(activity => {
+                if (activity.type == `PLAYING`) {
+                     //console.log(`${newVoiceState.member.user.username} is streaming ${activity.name}.`);
+                    if(newVoiceState.channel === null) { return false;}  //this dumb thing is needed to check if someone hung up the voice channel while streaming, otherwise fires twice. 
+                    streamingDetected(newVoiceState.member.user.username, activity.name);
+                };
+            });
+    }
+    });
+
+//Monitor messages and respond
 client.on('message', message => {
     //if asking for help, list commands
     if (message.content === `${prefix}help`) {
-        //console.log(message.content);
         // send back a list of commands.
         message.channel.send(helpEmbed);
     }
 
   //test function to try out embeds
     if (message.content === `${prefix}test`) {
-        //console.log(message.content);
-         // send back a list of commands.
-         //message.channel.send(laborDayEmbed);
-         dailyMessage();
+         streamingDetected();
       }
 
     //List the uptime
@@ -193,12 +207,18 @@ client.on('message', message => {
     }
     //react with a smiley if praised
     else if (message.content.toLowerCase().includes('good bot')) {
+        if (message.author.bot){
+            return;
+        }
              message.react('😍');
     }
 
 
     //random Arnold gif
     else if (message.content.toLowerCase().includes('arnold')) {
+        if (message.author.bot){
+            return;
+        }
         message.channel.send(randomArnold());
 }
 
@@ -237,7 +257,7 @@ client.on('message', message => {
 
     function randomArnold(){
         var index = getRandomInt(arnoldGifs.length);
-        console.log("Random number was: " + index + ", Arnold gif: " + arnoldGifs[index]);
+        //console.log("Random number was: " + index + ", Arnold gif: " + arnoldGifs[index]);
         var arnoldEmbed =  new Discord.MessageEmbed()
         .setColor('#0099ff')
         .setTitle("Did someone say Arnold?!")
@@ -267,13 +287,11 @@ function irregularHoliday(date){
 }
 
 function dailyMessage(){
-    console.log("Fired daily message");
     var currentDate = new Date();
     var irrHoliday = "";
     var channel = client.channels.cache.get(`${channelId}`);
 
     //check if Wednesday (day 3)
-    //console.log(currentDate.getDay());
     if(currentDate.getDay() === 3){
         channel.send(gamenightEmbed);
     }
@@ -312,7 +330,7 @@ function dailyMessage(){
     if(currentDate.getMonth()+1 === 1 & currentDate.getDate() === 1){
         channel.send(newyearsEmbed);
     }
-    // Memorial Day
+
     // 4th of July
     if(currentDate.getMonth()+1 === 7 & currentDate.getDate() === 4){
         channel.send(fourthofjulyEmbed);
@@ -329,4 +347,24 @@ function dailyMessage(){
     if(currentDate.getMonth()+1 === 12 & currentDate.getDate() === 25){
         channel.send(christmasEmbed);
     }
+}
+
+function streamingDetected(userName, gameName){
+    var sendingChannel = client.channels.cache.get(`${regularChannelId}`);
+    
+    //check channel for member streaming
+    var streamer = userName;
+
+    //get game they are streaming
+    var streamedGame = gameName;
+
+    //construct embed
+    var streamingEmbed = new Discord.MessageEmbed()
+                .setColor('#FF0000')
+                .setTitle(streamer + " is streaming!")
+                .setDescription("Looks like they are playing " + streamedGame + ", check it out!")
+                .setImage("https://i.imgur.com/9qPVnXX.gif");
+    
+    //send embed
+    sendingChannel.send(streamingEmbed);
 }
