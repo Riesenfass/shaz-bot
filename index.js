@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const cron = require('node-cron');
 var seedrandom = require('seedrandom');
-const { prefix, token, channelId, guildId,streamingChannelId,testChannelId } = require('./config.json');
+const { prefix, token, channelId, guildId,streamingChannelId,regularChannelId, testChannelId } = require('./config.json');
 const client = new Discord.Client();
 const starteddate = new Date();
 const startedTime =(starteddate.getMonth()+1) + "/"
