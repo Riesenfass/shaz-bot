@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const cron = require('node-cron');
+const getIP = require('external-ip')();
 var seedrandom = require('seedrandom');
 const { prefix, token, channelId, guildId,streamingChannelId,regularChannelId, testChannelId } = require('./config.json');
 const client = new Discord.Client();
@@ -57,7 +58,9 @@ const helpEmbed = new Discord.MessageEmbed()
                     { name: '!help', value: 'Prints the help - but you already knew that' },
                     { name: '!uptime', value: "Display how long I've been online" },
                     { name: '!randomConan', value: "Receive words of inspiration" },
-                    { name: '!status', value: "Set the status. Examples: !status watching TV, !status listening to music. Status can be cleared by using: !status reset" }
+                    { name: '!status', value: "Set the status. Examples: !status watching TV, !status listening music. Status can be cleared by using: !status reset" },
+                    { name: '!ip', value: "Print the current external IP address of the game server" },
+                    { name: '!whatsnew', value: "Print the changes from the latest release of Shaz-bot" }
                     //{ name: '\u200B', value: '\u200B' }
                 );
 
@@ -132,6 +135,18 @@ const shaneEmbed = new Discord.MessageEmbed()
                 .setDescription("Happy birthday Shane! Without you, I wouldn't exist.")
                 .setImage("https://i.imgur.com/8UjopnD.gif");
 
+const whatsnewEmbed = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle("What's new")
+                .setDescription("Shazbot has gotten an upgrade!")
+                .addFields(
+                    { name: 'NEW FEATURE: Show external IP', value: 'Simply type !ip to print out the current external IP address of the game server.' },
+                    { name: 'ENHANCEMENT: Case Insensitivity for commands', value: 'Commands started with the ! mark no longer care about capitalization. As always, type !help for a list of commands.' }
+                );
+
+
+
+
 //===== Schedule =======
 cron.schedule('0 0 10 * * *', () => dailyMessage()); // fire every day at 10am
 //cron.schedule('10 * * * * *', () => dailyMessage());                    
@@ -161,21 +176,33 @@ client.on("voiceStateUpdate", (oldVoiceState, newVoiceState) => {
 
 //Monitor messages and respond
 client.on('message', message => {
+
     //if asking for help, list commands
-    if (message.content === `${prefix}help`) {
+    if (message.content.toLowerCase() === `${prefix}help`) {
         // send back a list of commands.
         message.channel.send(helpEmbed);
     }
 
   //test function to try out embeds
-    if (message.content === `${prefix}test`) {
-         streamingDetected();
+    if (message.content.toLowerCase() === `${prefix}test`) {
+        // ipAddressReport();
+        // message.channel.send(whatsnewEmbed);
       }
 
     //List the uptime
-    else if (message.content === `${prefix}uptime`) {
+    else if (message.content.toLowerCase() === `${prefix}uptime`) {
         // send back the value stored at bot start time
         message.channel.send(uptimeEmbed);
+    }
+
+    //List the IP address
+    else if (message.content.toLowerCase() === `${prefix}ip`) {
+        ipAddressReport();
+    }
+
+    //List the IP address
+    else if (message.content.toLowerCase() === `${prefix}whatsnew`) {
+        message.channel.send(whatsnewEmbed);
     }
 
     //Change Status
@@ -201,7 +228,7 @@ client.on('message', message => {
             }
     }
 
-    else if (message.content === `${prefix}randomConan`) {
+    else if (message.content.toLowerCase() === `${prefix}randomconan`) {
         // send back a random quote from Conan
         message.channel.send(randomConan());
     }
@@ -367,4 +394,23 @@ function streamingDetected(userName, gameName){
     
     //send embed
     sendingChannel.send(streamingEmbed);
+}
+
+//This will print the IP address of the server the bot is running on to the specified channel. Obviously not for use in public discords or where you don't trust all the users.
+function ipAddressReport(){
+    getIP((err, ip) => {
+        if (err) {
+            throw err;
+        }
+    var sendingChannel = client.channels.cache.get(`${regularChannelId}`); 
+    //construct embed
+    var ipEmbed = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle("IP Address is:")
+                .setDescription(ip);
+    
+    //send embed
+    sendingChannel.send(ipEmbed);
+        
+    });
 }
