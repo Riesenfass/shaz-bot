@@ -60,7 +60,8 @@ const helpEmbed = new Discord.MessageEmbed()
                     { name: '!randomConan', value: "Receive words of inspiration" },
                     { name: '!status', value: "Set the status. Examples: !status watching TV, !status listening music. Status can be cleared by using: !status reset" },
                     { name: '!ip', value: "Print the current external IP address of the game server" },
-                    { name: '!whatsnew', value: "Print the changes from the latest release of Shaz-bot" }
+                    { name: '!whatsnew', value: "Print the changes from the latest release of Shaz-bot" },
+                    {name: 'My source code is available here', value: 'https://github.com/Riesenfass/shaz-bot'}
                     //{ name: '\u200B', value: '\u200B' }
                 );
 
