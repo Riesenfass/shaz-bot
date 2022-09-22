@@ -140,8 +140,7 @@ const whatsnewEmbed = new Discord.MessageEmbed()
                 .setTitle("What's new")
                 .setDescription("Shazbot has gotten an upgrade!")
                 .addFields(
-                    { name: 'NEW FEATURE: Show external IP', value: 'Simply type !ip to print out the current external IP address of the game server.' },
-                    { name: 'ENHANCEMENT: Case Insensitivity for commands', value: 'Commands started with the ! mark no longer care about capitalization. As always, type !help for a list of commands.' }
+                    { name: 'ENHANCEMENT: IP address message', value: 'Command will now print out port numbers for hosted servers.' }
                 );
 
 
@@ -200,7 +199,7 @@ client.on('message', message => {
         ipAddressReport();
     }
 
-    //List the IP address
+    //Prints the what's new box
     else if (message.content.toLowerCase() === `${prefix}whatsnew`) {
         message.channel.send(whatsnewEmbed);
     }
@@ -363,7 +362,6 @@ function dailyMessage(){
         channel.send(fourthofjulyEmbed);
     }
 
-    // Labor Day
 
     //Halloween
     if(currentDate.getMonth()+1 === 10 & currentDate.getDate() === 31){
@@ -407,10 +405,14 @@ function ipAddressReport(){
     var ipEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle("IP Address is:")
-                .setDescription(ip);
+                .setDescription(ip)
+                .addFields(
+                    { name: 'Valheim', value: '2456,2457,2458' },
+                    { name: 'Starbound', value: '22025' });
+
     
     //send embed
     sendingChannel.send(ipEmbed);
-        
+    
     });
 }
