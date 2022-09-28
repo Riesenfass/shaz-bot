@@ -319,7 +319,7 @@ function dailyMessage(){
     var channel = client.channels.cache.get(`${channelId}`);
 
     //check if Wednesday (day 3)
-    if(currentDate.getDay() === 3){
+    if(currentDate.getDay() === 4){
         channel.send(gamenightEmbed);
     }
 
